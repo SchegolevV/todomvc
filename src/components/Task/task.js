@@ -1,30 +1,53 @@
-import React from 'react';
-import { formatDistanceToNow } from 'date-fns';
+import React, { Component } from 'react';
+import './task.css'
+// import { formatDistanceToNow } from 'date-fns';
 
-const Task = ({status = 'active'}) => {
-    let editingInput;
-    if (status === 'editing') {
-       editingInput = <input type="text" className="edit" defaultValue="Editing task"/>;
+export default class Task extends Component {
+
+    state = {
+        status: 'active'
     }
-    let creationDate = new Date();
-    const sinceCreation = formatDistanceToNow(creationDate, {
-        includeSeconds: true
-    })
 
-    return (
-        <li className={status}>
-            <div className="view">
-                <input className="toggle" type="checkbox" />
-                <label>
-                    <span className='description'>{status} task</span>
-                    <span className='created'></span>
-                </label>
-                <button className='icon icon-edit'></button>
-                <button className='icon icon-destroy'></button>
-            </div>
-            {editingInput}
-        </li>
-    );
-};
+    setStatus = () => {
+        this.setState(({status}) => {
+            let newStatus;
+            status === 'active' ? newStatus = 'completed' : newStatus = 'active'
+            return {
+                status: newStatus
+            }
+        })
+    }
 
-export default Task;
+    render() {
+        const { text, deleteItem } = this.props;
+        const { status } = this.state;
+
+
+
+        let editingInput;
+        if (status === 'editing') {
+            editingInput = (
+                <input type="text" className="edit" defaultValue="Editing task" />
+            );
+        }
+
+        return (
+            <li className={status}>
+                <div className="view">
+                    <input className="toggle" 
+                            type="checkbox" 
+                            onChange={this.setStatus}/>
+                    <label>
+                        <span className="description">{text}</span>
+                        <span className="created"></span>
+                    </label>
+                    <button className="icon icon-edit">edit</button>
+                    <button className="icon icon-destroy" onClick={deleteItem}>
+                        delete
+                    </button>
+                </div>
+                {editingInput}
+            </li>
+        );
+    }
+}

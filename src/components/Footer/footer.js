@@ -6,7 +6,7 @@ const Footer = ({count}) => {
         <footer className="footer">
             <span className="todo-count">{count} items left</span>
             <TasksFilter />
-            <button className="clear-completed">clear completed</button>
+            <button className="clear-completed">clear</button>
         </footer>
     )
 }
