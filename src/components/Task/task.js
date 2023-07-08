@@ -1,30 +1,15 @@
 import React, { Component } from 'react';
-import './task.css'
+import './task.css';
 // import { formatDistanceToNow } from 'date-fns';
 
 export default class Task extends Component {
-
-    state = {
-        status: 'active'
-    }
-
-    setStatus = () => {
-        this.setState(({status}) => {
-            let newStatus;
-            status === 'active' ? newStatus = 'completed' : newStatus = 'active'
-            return {
-                status: newStatus
-            }
-        })
-    }
-
     render() {
-        const { text, deleteItem } = this.props;
-        const { status } = this.state;
-
-
-
+        const { text, deleteItem, onChangeStatus, status, hidden } = this.props;
+        let statusClass;
         let editingInput;
+
+        hidden ? (statusClass = status + ' hidden') : (statusClass = status);
+
         if (status === 'editing') {
             editingInput = (
                 <input type="text" className="edit" defaultValue="Editing task" />
@@ -32,11 +17,9 @@ export default class Task extends Component {
         }
 
         return (
-            <li className={status}>
+            <li className={statusClass}>
                 <div className="view">
-                    <input className="toggle" 
-                            type="checkbox" 
-                            onChange={this.setStatus}/>
+                    <input className="toggle" type="checkbox" onChange={onChangeStatus} />
                     <label>
                         <span className="description">{text}</span>
                         <span className="created"></span>

@@ -1,15 +1,17 @@
-import React from "react";
-import Task from "../Task/task";
+import React from 'react';
+import Task from '../Task/task';
 
-const TaskList = ({className, taskProps, onDelete}) => {
+const TaskList = ({ className, taskProps, onDelete, onChangeStatus }) => {
     let tasks = taskProps.map((props) => {
-        return <Task {...props} deleteItem={() => onDelete(props.key)}/>
+        return (
+            <Task
+                {...props}
+                deleteItem={() => onDelete(props.key)}
+                onChangeStatus={() => onChangeStatus(props.key)}
+            />
+        );
     });
-    return (
-        <ul className={className}>
-            {tasks}
-        </ul>
-    );
-}
+    return <ul className={className}>{tasks}</ul>;
+};
 
 export default TaskList;
