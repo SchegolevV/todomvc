@@ -17,6 +17,7 @@ export default class App extends Component {
             status: 'active',
             key: this.maxID++,
             hidden: false,
+            time: new Date(),
         };
     }
 
@@ -48,7 +49,24 @@ export default class App extends Component {
         });
     };
 
+    editItem = (key) => {
+        this.setState(({ taskData }) => {
+            const editingTask = taskData.find((el) => el.key === key);
+            const newData = taskData.map((task) => {
+                if (task === editingTask) {
+                    return { ...task, status: 'editing' };
+                }
+                return task;
+            });
+            return {
+                taskData: newData,
+            };
+        });
+    };
+
     addItem = (text) => {
+        if (text.trim() === '') return;
+
         const newItem = this.createNewTask(text);
 
         this.setState(({ taskData }) => {
@@ -100,6 +118,8 @@ export default class App extends Component {
                         className="todo-list"
                         taskProps={taskData}
                         onDelete={this.deleteItem}
+                        onEdit={this.editItem}
+                        onAdd={this.addItem}
                         status={this.state.status}
                         onChangeStatus={this.changeTaskStatus}
                     />

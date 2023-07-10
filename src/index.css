@@ -226,6 +226,9 @@ input {
 .todo-list li label .created {
 	font-size: 13px;
 	color: gray;
+	position: absolute;
+	left: 75px;
+	bottom: 0;
 }
 
 .todo-list li label .description {

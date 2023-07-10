@@ -1,20 +1,28 @@
 import React, { Component } from 'react';
+import EditingForm from '../EditingForm/editingForm';
 import './task.css';
-// import { formatDistanceToNow } from 'date-fns';
+
+import { formatDistanceToNow } from 'date-fns';
 
 export default class Task extends Component {
     render() {
-        const { text, deleteItem, onChangeStatus, status, hidden } = this.props;
+        const { text, onDelete, onEdit, onChangeStatus, status, hidden, time } =
+            this.props;
+
         let statusClass;
-        let editingInput;
+        let editingForm;
+        console.log();
 
         hidden ? (statusClass = status + ' hidden') : (statusClass = status);
 
         if (status === 'editing') {
-            editingInput = (
-                <input type="text" className="edit" defaultValue="Editing task" />
-            );
+            editingForm = <EditingForm text={text} />;
         }
+
+        const timeSinceCreation = formatDistanceToNow(time, {
+            includeSeconds: true,
+            addSuffix: true,
+        });
 
         return (
             <li className={statusClass}>
@@ -22,14 +30,16 @@ export default class Task extends Component {
                     <input className="toggle" type="checkbox" onChange={onChangeStatus} />
                     <label>
                         <span className="description">{text}</span>
-                        <span className="created"></span>
+                        <span className="created">created {timeSinceCreation}</span>
                     </label>
-                    <button className="icon icon-edit">edit</button>
-                    <button className="icon icon-destroy" onClick={deleteItem}>
+                    <button className="icon icon-edit" onClick={onEdit}>
+                        edit
+                    </button>
+                    <button className="icon icon-destroy" onClick={onDelete}>
                         delete
                     </button>
                 </div>
-                {editingInput}
+                {editingForm}
             </li>
         );
     }
