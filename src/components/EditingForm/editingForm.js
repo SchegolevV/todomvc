@@ -1,14 +1,30 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export default class EditingForm extends Component {
 
-    render() {
-        const {text} = this.props
+    static propTypes = {
+        onSubmit: PropTypes.func.isRequired,
+        onChangeStatus: PropTypes.func.isRequired,
+        id: PropTypes.number.isRequired
+    }
 
+    onEnter = (e) => {
+        const {id} = this.props
+        if (e.code === 'Enter') {
+            this.props.onSubmit(id, e.target.value);
+            this.props.onChangeStatus(id)
+        }
+    }
+
+    render() {
         return (
-            <form>
-                <input type="text" className="edit" defaultValue={text}/>
-            </form>
+            <input
+                type="text"
+                className="edit"
+                defaultValue={this.props.text}
+                onKeyDown={this.onEnter}
+            />
         );
     }
 }

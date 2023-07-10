@@ -5,24 +5,33 @@ import './task.css';
 import { formatDistanceToNow } from 'date-fns';
 
 export default class Task extends Component {
+
     render() {
-        const { text, onDelete, onEdit, onChangeStatus, status, hidden, time } =
-            this.props;
-
-        let statusClass;
-        let editingForm;
-        console.log();
-
-        hidden ? (statusClass = status + ' hidden') : (statusClass = status);
-
-        if (status === 'editing') {
-            editingForm = <EditingForm text={text} />;
-        }
+        const {
+            id,
+            text,
+            onDelete,
+            onEdit,
+            onChangeStatus,
+            status,
+            hidden,
+            time,
+            onSubmitEdit,
+        } = this.props;
 
         const timeSinceCreation = formatDistanceToNow(time, {
             includeSeconds: true,
             addSuffix: true,
         });
+
+        let statusClass;
+        let editingForm;
+
+        hidden ? (statusClass = status + ' hidden') : (statusClass = status);
+
+        if (status === 'editing') {
+            editingForm = <EditingForm text={text} onSubmit={onSubmitEdit} id={id} onChangeStatus={onChangeStatus}/>;
+        }
 
         return (
             <li className={statusClass}>

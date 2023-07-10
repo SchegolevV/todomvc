@@ -6,6 +6,7 @@ import Footer from '../Footer/footer';
 
 export default class App extends Component {
     maxID = 0;
+    maxKey = 0;
 
     state = {
         taskData: [],
@@ -15,16 +16,17 @@ export default class App extends Component {
         return {
             text: text,
             status: 'active',
-            key: this.maxID++,
+            id: this.maxID++,
+            key: this.maxKey++,
             hidden: false,
             time: new Date(),
         };
     }
 
-    changeTaskStatus = (key) => {
+    changeTaskStatus = (id) => {
         this.setState(({ taskData }) => {
             let newStatus;
-            const oldItem = taskData.find((task) => task.key === key);
+            const oldItem = taskData.find((task) => task.id === id);
             oldItem.status === 'active'
                 ? (newStatus = 'completed')
                 : (newStatus = 'active');
@@ -38,9 +40,9 @@ export default class App extends Component {
         });
     };
 
-    deleteItem = (key) => {
+    deleteItem = (id) => {
         this.setState(({ taskData }) => {
-            const idx = taskData.findIndex((el) => el.key === key);
+            const idx = taskData.findIndex((el) => el.id === id);
             const newData = taskData.toSpliced(idx, 1);
 
             return {
@@ -49,9 +51,9 @@ export default class App extends Component {
         });
     };
 
-    editItem = (key) => {
+    editItem = (id) => {
         this.setState(({ taskData }) => {
-            const editingTask = taskData.find((el) => el.key === key);
+            const editingTask = taskData.find((el) => el.id === id);
             const newData = taskData.map((task) => {
                 if (task === editingTask) {
                     return { ...task, status: 'editing' };
@@ -63,6 +65,21 @@ export default class App extends Component {
             };
         });
     };
+
+    submitEdit = (id, text) => {
+        this.setState(({taskData}) => {
+            const oldItem = taskData.find((task) => task.id === id)
+            const newData = taskData.map((task) => {
+                if (task === oldItem) {
+                    return {...task, text: text}
+                }
+                return task
+            })
+            return {
+                taskData: newData
+            }
+        })
+    }
 
     addItem = (text) => {
         if (text.trim() === '') return;
@@ -103,7 +120,7 @@ export default class App extends Component {
 
     clearCompleted = () => {
         let completed = this.state.taskData.filter((task) => task.status === 'completed');
-        completed.forEach((task) => this.deleteItem(task.key));
+        completed.forEach((task) => this.deleteItem(task.id));
     };
 
     render() {
@@ -117,11 +134,12 @@ export default class App extends Component {
                     <TaskList
                         className="todo-list"
                         taskProps={taskData}
-                        onDelete={this.deleteItem}
-                        onEdit={this.editItem}
                         onAdd={this.addItem}
-                        status={this.state.status}
-                        onChangeStatus={this.changeTaskStatus}
+                        onDelete={this.deleteItem}
+                            onEdit={this.editItem}
+                            onSubmitEdit={this.submitEdit}
+                                status={this.state.status}
+                                onChangeStatus={this.changeTaskStatus}
                     />
                     <Footer
                         count={activeCount}
