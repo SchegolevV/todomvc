@@ -6,7 +6,6 @@ import Footer from '../Footer/footer';
 
 export default class App extends Component {
     maxID = 0;
-    maxKey = 0;
 
     state = {
         taskData: [],
@@ -17,7 +16,6 @@ export default class App extends Component {
             text: text,
             status: 'active',
             id: this.maxID++,
-            key: this.maxKey++,
             hidden: false,
             time: new Date(),
         };

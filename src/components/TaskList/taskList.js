@@ -26,6 +26,7 @@ export default class TaskList extends Component {
                 <Task
                     {...props}
                     id={props.id}
+                    key={props.id}
                     onDelete={() => onDelete(props.id)}
                     onEdit={() => onEdit(props.id)}
                     onSubmitEdit={onSubmitEdit}
