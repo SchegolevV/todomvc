@@ -7,16 +7,31 @@ export default class EditingForm extends Component {
     onChangeStatus: PropTypes.func.isRequired,
     id: PropTypes.number.isRequired,
   }
+  state = {
+    label: this.props.text,
+  }
+  onLabelChange = (e) => {
+    this.setState({
+      label: e.target.value,
+    })
+  }
 
-  onEnter = (e) => {
-    const { id } = this.props
-    if (e.code === 'Enter') {
-      this.props.onSubmit(id, e.target.value)
-      this.props.onChangeStatus(id)
+  onSubmit = (e) => {
+    e.preventDefault()
+
+    if (this.state.label.trim() === '') {
+      return
     }
+    const { id } = this.props
+    this.props.onSubmit(id, this.state.label)
+    this.props.onChangeStatus(id)
   }
 
   render() {
-    return <input type="text" className="edit" defaultValue={this.props.text} onKeyDown={this.onEnter} />
+    return (
+      <form onSubmit={this.onSubmit}>
+        <input type="text" className="edit" defaultValue={this.state.label} onChange={this.onLabelChange} />
+      </form>
+    )
   }
 }

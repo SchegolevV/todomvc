@@ -111,7 +111,6 @@ export default class App extends Component {
       })
     }
   }
-
   clearCompleted = () => {
     let completed = this.state.taskData.filter((task) => task.status === 'completed')
     completed.forEach((task) => this.deleteItem(task.id))
