@@ -11,13 +11,14 @@ export default class App extends Component {
     taskData: [],
   }
 
-  createNewTask(text) {
+  createNewTask(text, timer = null) {
     return {
       text: text,
       status: 'active',
       id: this.maxID++,
       hidden: false,
       time: new Date(),
+      timer: timer,
     }
   }
 
@@ -75,10 +76,10 @@ export default class App extends Component {
     })
   }
 
-  addItem = (text) => {
+  addItem = (text, timer = null) => {
     if (text.trim() === '') return
 
-    const newItem = this.createNewTask(text)
+    const newItem = this.createNewTask(text, timer)
 
     this.setState(({ taskData }) => {
       const newData = taskData.toSpliced(taskData.length, 0, newItem)
@@ -87,6 +88,7 @@ export default class App extends Component {
       }
     })
   }
+
   filterTask = (e) => {
     if (e.target.value === 'all') {
       this.setState(({ taskData }) => {

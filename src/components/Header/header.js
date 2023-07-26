@@ -4,7 +4,7 @@ const Header = ({ article, className, onAdd }) => {
   return (
     <header className={className}>
       <h1>{article}</h1>
-      <NewTaskForm type="text" placeholder="What needs to be done?" autofocus={true} onAdd={onAdd} />
+      <NewTaskForm autofocus={true} onAdd={onAdd} />
     </header>
   )
 }
