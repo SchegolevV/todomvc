@@ -1,68 +1,37 @@
 /* eslint-disable prettier/prettier */
-import { Component } from 'react'
+import { useState, useEffect } from 'react'
 
-export default class Timer extends Component {
-  state = {
-    timer: null,
-    timerID: null,
-  }
-  componentDidMount() {
-    this.setState({ timer: this.props.timer })
-  }
+export default function Timer({ timer, active, isEdit }) {
+  const [timePassed, setTimePassed] = useState(timer)
+  const [counting, setCounting] = useState(false)
 
-  componentDidUpdate(pP, prevState) {
-    if (prevState.timer !== this.state.timer) {
-      if (this.state.timer < 1000) {
-        this.onPause()
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (counting) {
+        setTimePassed((time) => time - 1000)
       }
-      if (this.props.status === 'completed' || this.props.status === 'editing') {
-        this.onPause()
-      }
+    }, 1000)
+    if (!active || isEdit || timePassed < 1000) {
+      setCounting(false)
     }
-  }
+    return () => clearInterval(id)
+  }, [counting, active, isEdit, timePassed])
 
-  componentWillUnmount() {
-    clearInterval(this.state.timerID)
-  }
-
-  convertMs(ms) {
+  const convertMs = (ms) => {
     let min = new Date(ms).getMinutes()
     let sec = new Date(ms).getSeconds()
     return `${min}:${sec}`
   }
 
-  createTimer = () => {
-    return this.convertMs(this.state.timer)
-  }
+  const onPlay = () => setCounting(true)
 
-  onPlay = () => {
-    const id = setInterval(() => {
-      this.setState(({ timer }) => {
-        const currentTime = timer - 1000
-        return {
-          timer: currentTime,
-        }
-      })
-    }, 1000)
-    this.setState({
-      timerID: id,
-    })
-  }
+  const onPause = () => setCounting(false)
 
-  onPause = () => {
-    clearInterval(this.state.timerID)
-    this.setState({
-      timerID: null,
-    })
-  }
-
-  render() {
-    return (
-      <span className="description">
-        <button className="icon icon-play" onClick={this.onPlay}></button>
-        <button className="icon icon-pause" onClick={this.onPause}></button>
-        <span style={{ marginLeft: '10px' }}>{this.createTimer()}</span>
-      </span>
-    )
-  }
+  return (
+    <span className="description">
+      <button className="icon icon-play" onClick={onPlay}></button>
+      <button className="icon icon-pause" onClick={onPause}></button>
+      <span style={{ marginLeft: '10px' }}>{convertMs(timePassed)}</span>
+    </span>
+  )
 }
