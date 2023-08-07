@@ -1,47 +1,35 @@
-import { Component } from 'react'
 import { formatDistanceToNow } from 'date-fns'
+import { useContext } from 'react'
 
+import { FunctionContext } from '../../context/context'
 import Timer from '../Timer/timer'
 import EditingForm from '../EditingForm/editingForm'
 import './task.css'
 
-export default class Task extends Component {
-  hasTimer() {
-    if (this.props.timer) {
-      return <Timer timer={this.props.timer} status={this.props.status} />
-    }
-  }
-  render() {
-    const { id, text, onDelete, onEdit, onChangeStatus, status, hidden, time, onSubmitEdit } = this.props
+export default function Task({ name, id, active, isEdit, creationTime, hidden, timer }) {
+  const { onDeleteTask, onChangeActive, onEdit } = useContext(FunctionContext)
 
-    const timeSinceCreation = formatDistanceToNow(time, {
-      includeSeconds: true,
-      addSuffix: true,
-    })
+  let activityClass = isEdit ? 'editing' : active ? 'active' : 'completed'
+  hidden ? (activityClass += ' hidden') : null
 
-    let statusClass
-    let editingForm
+  const sinceCreation = formatDistanceToNow(creationTime, {
+    includeSeconds: true,
+    addSuffix: true,
+  })
 
-    hidden ? (statusClass = status + ' hidden') : (statusClass = status)
-
-    if (status === 'editing') {
-      editingForm = <EditingForm text={text} onSubmit={onSubmitEdit} id={id} onChangeStatus={onChangeStatus} />
-    }
-
-    return (
-      <li className={statusClass}>
-        <div className="view">
-          <input className="toggle" type="checkbox" onChange={onChangeStatus} />
-          <label>
-            <span className="title">{text}</span>
-            {this.hasTimer()}
-            <span className="description">created {timeSinceCreation}</span>
-          </label>
-          <button className="icon icon-edit" onClick={onEdit}></button>
-          <button className="icon icon-destroy" onClick={onDelete}></button>
-        </div>
-        {editingForm}
-      </li>
-    )
-  }
+  return (
+    <li className={activityClass}>
+      <div className="view">
+        <input className="toggle" type="checkbox" onChange={() => onChangeActive(id)} />
+        <label>
+          <span className="title">{name}</span>
+          {(timer && <Timer timer={timer} active={active} isEdit={isEdit} />) || null}
+          <span className="description">created {sinceCreation}</span>
+        </label>
+        <button className="icon icon-edit" onClick={() => onEdit(id)}></button>
+        <button className="icon icon-destroy" onClick={() => onDeleteTask(id)}></button>
+      </div>
+      {isEdit && <EditingForm id={id} name={name} />}
+    </li>
+  )
 }

@@ -1,37 +1,27 @@
-import { Component } from 'react'
-import PropTypes from 'prop-types'
+import { useState, useContext } from 'react'
 
-export default class EditingForm extends Component {
-  static propTypes = {
-    onSubmit: PropTypes.func.isRequired,
-    onChangeStatus: PropTypes.func.isRequired,
-    id: PropTypes.number.isRequired,
-  }
-  state = {
-    label: this.props.text,
-  }
-  onLabelChange = (e) => {
-    this.setState({
-      label: e.target.value,
-    })
+import { FunctionContext } from '../../context/context'
+
+export default function EditingForm({ id, name }) {
+  const [label, setLabel] = useState(name)
+  const { submitEdit } = useContext(FunctionContext)
+
+  const onLabelChange = (e) => {
+    setLabel(e.target.value)
   }
 
-  onSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault()
 
-    if (this.state.label.trim() === '') {
-      return
+    if (label.trim() === '') {
+      submitEdit(id, name)
     }
-    const { id } = this.props
-    this.props.onSubmit(id, this.state.label)
-    this.props.onChangeStatus(id)
+    submitEdit(id, label)
   }
 
-  render() {
-    return (
-      <form onSubmit={this.onSubmit}>
-        <input type="text" className="edit" defaultValue={this.state.label} onChange={this.onLabelChange} />
-      </form>
-    )
-  }
+  return (
+    <form onSubmit={onSubmit}>
+      <input type="text" className="edit" defaultValue={label} onChange={onLabelChange} />
+    </form>
+  )
 }
